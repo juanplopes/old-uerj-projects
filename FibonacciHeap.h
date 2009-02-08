@@ -2,7 +2,7 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
-#define ONE_OVER_LOG_PHI 1.0 / log((1.0 + sqrt(5.0)) / 2.0)
+#define ONE_OVER_LOG_PHI 4.78497196678d
 
 using namespace std;
 
@@ -55,7 +55,7 @@ class FibonacciHeap{
                 minNode->right = minNode;
             }
             nNodes++;
-            cout << "inserido no com chave " << node->key << " valor = " << node->data << " na heap" << endl;
+            //cout << "inserido no com chave " << node->key << " valor = " << node->data << " na heap" << endl;
         }
 
         FibonacciHeapNode* removeMin(){
@@ -98,8 +98,8 @@ class FibonacciHeap{
                 // decrement size of heap
                 nNodes--;
             }
-            cout << "chave minimo valor = " << z->key << " noh = " << z->data << endl;
-            cout << "minNode agora eh " << (minNode!=NULL?minNode->data:-1) << "(con)" <<endl;
+            //cout << "chave minimo valor = " << z->key << " noh = " << z->data << endl;
+            //cout << "minNode agora eh " << (minNode!=NULL?minNode->data:-1) << "(con)" <<endl;
             return z;
         }
     
@@ -127,7 +127,7 @@ class FibonacciHeap{
          }
     
         void cut(FibonacciHeapNode* x, FibonacciHeapNode* y){
-            cout << "cortando noh " << x->data << " de " << y->data<< endl;
+            //cout << "cortando noh " << x->data << " de " << y->data<< endl;
             
             // remove x from childlist of y and decrement degree[y]
             x->left->right = x->right;
@@ -151,7 +151,7 @@ class FibonacciHeap{
             x->mark = false;
             
             if (minNode == NULL || x->key < minNode->key) {
-                cout << "minNode agora eh " << x->data << "(cut)" <<endl;
+                //cout << "minNode agora eh " << x->data << "(cut)" <<endl;
                 minNode = x;
             }
         }
@@ -236,21 +236,20 @@ class FibonacciHeap{
         }
 
         void decreaseKey(FibonacciHeapNode *x, int k){
-            cout << "decrementando key do noh " << x->data << " de " << x->key << " para " << k << endl;
+            //cout << "decrementando key do noh " << x->data << " de " << x->key << " para " << k << endl;
             if ( k >= x->key ) return;
             x->key=k;
             FibonacciHeapNode *y= x->parent;
     
-            cout << " dec pai " << (y!=NULL?y->data:-1) << endl;
+            //cout << " dec pai " << (y!=NULL?y->data:-1) << endl;
 
             if ( y!= NULL && x->key < y->key ){
                 cut(x,y);
                 cascadingCut(y);
             } else if (minNode == NULL || y==NULL && x->key<minNode->key) {
-                cout << "minNode agora eh " << x->data << "(dec)" << endl;
+                //cout << "minNode agora eh " << x->data << "(dec)" << endl;
                 minNode = x;   
             }
             
-            if (x == NULL) cout << "merda!" << endl;
         }
  }; 
