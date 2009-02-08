@@ -7,7 +7,8 @@
 #include <deque>
 #include <algorithm>
 #include <string>
-#include "FibonacciHeap.cpp"
+
+#include "FibonacciHeap.h"
 
 struct Edge {
     int dest, cost;
@@ -72,13 +73,13 @@ struct Graph {
         
         while(heap->nNodes>0) {
             FibonacciHeapNode* node = heap->removeMin();
-            
+
             for(std::list<Edge>::iterator j = this->G[node->data].begin(); j != this->G[node->data].end(); j++) {
-                if (y[node->data] + j->cost < y[j->dest]) {
-                    cout << "atualizando " << j->dest << " com " << y[node->data] + j->cost << endl;
-                    y[j->dest] = y[node->data]+j->cost;
-                    heap->decreaseKey(nodes[j->dest], y[j->dest]);
-                    p[j->dest] = node->data;
+                int aux = y[node->data] + j->cost;
+                if (aux < y[j->dest]) {
+                    y[j->dest] = aux;
+                    heap->decreaseKey(nodes[j->dest], aux);
+                    p[j->dest] = node->data;   
                 }
             }
         }

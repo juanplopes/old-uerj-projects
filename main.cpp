@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Dijkstra.cpp"
+#include "Dijkstra.h"
 
 using namespace std;
 
