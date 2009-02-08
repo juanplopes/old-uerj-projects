@@ -19,7 +19,7 @@ int main() {
         cin >> a >> b;
         if (a==0 && b==0) break;
         
-        ShortestPath* path = graph->Dijkstra(a-1)->getPath(b-1);
+        ShortestPath* path = graph->Dijkstra(a-1)->GetPath(b-1);
         
         cout << "Custo: " << path->cost << endl;
         cout << "Caminho:";

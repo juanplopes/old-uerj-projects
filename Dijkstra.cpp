@@ -26,7 +26,7 @@ struct ShortestPaths {
 
     ShortestPaths(int n, int src) : src(src), y(n), p(n) { }
     
-    ShortestPath* getPath(int dest) {
+    ShortestPath* GetPath(int dest) {
         ShortestPath* result = new ShortestPath(y[dest]);
         for(int i=dest; p[i] > -1; i = p[i]) {
             result->path.push_front(i);   
