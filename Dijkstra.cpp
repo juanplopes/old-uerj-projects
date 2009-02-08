@@ -58,26 +58,22 @@ struct Graph {
 
     ShortestPaths* Graph::Dijkstra(int src) {
         int y[this->n], p[this->n];
-        bool can[this->n];
         FibonacciHeap* heap = new FibonacciHeap();
         FibonacciHeapNode* nodes[this->n];
-        
+
+        int value = 0;        
         for(int i=0; i<this->n; i++) { 
-            y[i] = INF; 
+            value = ((i==src)?0:INF);
+            y[i] = value; 
             p[i] = -1; 
-            can[i] = true;
-            nodes[i] = new FibonacciHeapNode(i, INF);
+            nodes[i] = new FibonacciHeapNode(i, value);
             heap->insert(nodes[i]);
         }
-        y[src] = 0;
-        heap->decreaseKey(nodes[src], 0);
         
         while(heap->nNodes>0) {
             FibonacciHeapNode* node = heap->removeMin();
             y[node->data] = node->key;
                         
-            can[node->data] = false;
-            
             for(std::list<Edge>::iterator j = this->G[node->data].begin(); j != this->G[node->data].end(); j++) {
                 if (y[node->data] + j->cost < y[j->dest]) {
                     heap->decreaseKey(nodes[j->dest], y[node->data] + j->cost);
