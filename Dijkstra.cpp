@@ -72,12 +72,13 @@ struct Graph {
         
         while(heap->nNodes>0) {
             FibonacciHeapNode* node = heap->removeMin();
-            y[node->data] = node->key;
-                        
+            
             for(std::list<Edge>::iterator j = this->G[node->data].begin(); j != this->G[node->data].end(); j++) {
                 if (y[node->data] + j->cost < y[j->dest]) {
-                    heap->decreaseKey(nodes[j->dest], y[node->data] + j->cost);
-                    p[j->dest] = node->data;   
+                    cout << "atualizando " << j->dest << " com " << y[node->data] + j->cost << endl;
+                    y[j->dest] = y[node->data]+j->cost;
+                    heap->decreaseKey(nodes[j->dest], y[j->dest]);
+                    p[j->dest] = node->data;
                 }
             }
         }
