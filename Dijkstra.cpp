@@ -6,6 +6,7 @@
 #include <list>
 #include <deque>
 #include <algorithm>
+#include <string>
 #include "FibonacciHeap.cpp"
 
 struct Edge {
@@ -17,6 +18,15 @@ struct ShortestPath {
     int cost;
     std::deque<int> path;
     ShortestPath(int cost) : cost(cost) { }
+    
+    void Print(ostream &stream, int bias) {
+        for(int i=0; i<path.size(); i++) {
+            if (i>0) 
+                stream << " ";
+            
+            stream << path[i]+bias;
+        }
+    }
 };
 
 struct ShortestPaths {

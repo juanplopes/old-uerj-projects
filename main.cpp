@@ -23,12 +23,9 @@ int main() {
         
         cout << "Custo: " << path->cost << endl;
         cout << "Caminho:";
-        for(int i=0; i<path->path.size(); i++) {
-            cout << " " << path->path[i]+1;
-        }
-        cout << endl << endl;
+            path->Print(cout, +1);
+            cout << endl;
     }
-
 
    
 }
