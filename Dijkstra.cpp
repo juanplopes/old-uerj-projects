@@ -49,8 +49,8 @@ struct ShortestPaths {
 
 struct Graph {
     std::vector<std::list<Edge> > G;
-    int n, m;
-    Graph(int n, int m) : n(n), m(m), G(n) { }
+    int n;
+    Graph(int n) : n(n), G(n) { }
 
     void AddEdge(int src, int dest, int cost) {
         this->G[src].push_back(Edge(dest, cost));   
@@ -85,6 +85,10 @@ struct Graph {
                 }
             }
         }
+        
+        delete(heap);
+        for(int i=0; i<this->n; i++)
+            delete(nodes[i]);
         
         ShortestPaths* result = new ShortestPaths(this->n, src);
         for(int i=0; i<this->n; i++) {
