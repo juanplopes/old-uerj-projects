@@ -149,11 +149,7 @@ class FibonacciHeap{
 
             // set mark[x] to false
             x->mark = false;
-            
-            if (minNode == NULL || x->key < minNode->key) {
-                //cout << "minNode agora eh " << x->data << "(cut)" <<endl;
-                minNode = x;
-            }
+           
         }
     
         void consolidate(){
@@ -246,10 +242,6 @@ class FibonacciHeap{
             if ( y!= NULL && x->key < y->key ){
                 cut(x,y);
                 cascadingCut(y);
-            } else if (minNode == NULL || y==NULL && x->key<minNode->key) {
-                //cout << "minNode agora eh " << x->data << "(dec)" << endl;
-                minNode = x;   
             }
-            
         }
  }; 
