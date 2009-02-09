@@ -8,7 +8,7 @@
 #include <algorithm>
 #include <string>
 
-#include "FibonacciHeap.h"
+#include "FibonacciHeap.cpp"
 
 struct Edge {
     int dest, cost;
@@ -57,7 +57,7 @@ struct Graph {
         this->G[src].push_back(Edge(dest, cost));   
     }
 
-    ShortestPaths* Graph::Dijkstra(int src) {
+    ShortestPaths* Dijkstra(int src) {
         int y[this->n], p[this->n];
         FibonacciHeap* heap = new FibonacciHeap();
         FibonacciHeapNode* nodes[this->n];
