@@ -1,3 +1,4 @@
+#include <cstdlib>
 #include <iostream>
 #include <math.h>
 #include <vector>
@@ -64,21 +65,18 @@ class FibonacciHeap{
                 FibonacciHeapNode *x = z->child;
 		FibonacciHeapNode *tempRight;
 
-                // get all children of minNode
-		if (numKids > 0){
-                    // last child of z(x->left) at left of z->right
-                    x->left->right = z->right;
-                    z->right->left = x->left;
-
-                    // first child of z(x) at right of z->left
-                    x->left = z->left;
+		// get children of minNode to root lost
+                if ( numKids > 0) {
+		    z->right->left = x->left;
                     z->left->right = x;
-                }
+                    x->left->right = z->right;
+                    x->left = z->left;
+		}
 
+		
                 // for each child of z do...
-                
                 while (numKids > 0) {
-                    //tempRight = x->right;
+                    tempRight = x->right;
 
                     // remove x from child list
                     //x->left->right = x->right;
@@ -92,8 +90,7 @@ class FibonacciHeap{
 
                     // set parent[x] to NULL
                     x->parent = NULL;
-                    x = x->right;
-                    //x = tempRight;
+                    x = tempRight;
                     numKids--;
                 }
 
