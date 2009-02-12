@@ -63,31 +63,44 @@ class FibonacciHeap{
             if (z != NULL) {
                 int numKids = z->degree;
                 FibonacciHeapNode *x = z->child;
-				FibonacciHeapNode *tempRight;
-				
+		FibonacciHeapNode *tempRight;
+
+                // get all children of minNode
+		if (numKids > 0){
+                    // last child of z(x->left) at left of z->right
+                    x->left->right = z->right;
+                    z->right->left = x->left;
+
+                    // first child of z(x) at right of z->left
+                    x->left = z->left;
+                    z->left->right = x;
+                }
+
                 // for each child of z do...
+                
                 while (numKids > 0) {
-                    tempRight = x->right;
+                    //tempRight = x->right;
 
                     // remove x from child list
-                    x->left->right = x->right;
-                    x->right->left = x->left;
+                    //x->left->right = x->right;
+                    //x->right->left = x->left;
 
                     // add x to root list of heap
-                    x->left = minNode;
-                    x->right = minNode->right;
-                    minNode->right = x;
-                    x->right->left = x;
+                    //x->left = minNode;
+                    //x->right = minNode->right;
+                    //minNode->right = x;
+                    //x->right->left = x;
 
                     // set parent[x] to NULL
                     x->parent = NULL;
-                    x = tempRight;
+                    x = x->right;
+                    //x = tempRight;
                     numKids--;
                 }
 
                 // remove z from root list of heap
-                z->left->right = z->right;
-                z->right->left = z->left;
+                //z->left->right = z->right;
+                //z->right->left = z->left;
 
                 if (z == z->right) minNode = NULL;
                 else {
