@@ -65,18 +65,18 @@ class FibonacciHeap{
                 FibonacciHeapNode *x = z->child;
 		FibonacciHeapNode *tempRight;
 
-		// get children of minNode to root lost
+                // get children of z to root lost
                 if ( numKids > 0) {
-		    z->right->left = x->left;
-                    z->left->right = x;
-                    x->left->right = z->right;
-                    x->left = z->left;
-		}
+                    tempRight = z->right;
+                    x->left->right = tempRight;
+                    tempRight->left = x->left;
+                    x->left = z;
+                    z->right = x;
+                }
 
-		
                 // for each child of z do...
                 while (numKids > 0) {
-                    tempRight = x->right;
+                    //tempRight = x->right;
 
                     // remove x from child list
                     //x->left->right = x->right;
@@ -90,13 +90,14 @@ class FibonacciHeap{
 
                     // set parent[x] to NULL
                     x->parent = NULL;
-                    x = tempRight;
+                    //x = tempRight;
+                    x = x->right;
                     numKids--;
                 }
 
                 // remove z from root list of heap
-                //z->left->right = z->right;
-                //z->right->left = z->left;
+                z->left->right = z->right;
+                z->right->left = z->left;
 
                 if (z == z->right) minNode = NULL;
                 else {
