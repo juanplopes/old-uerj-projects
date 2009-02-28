@@ -207,13 +207,13 @@ exprOr returns[Operando op] :
 		op = $e1.op;
 	}
 	(
-		'or' e2=exprXor
+		'or' e2=exprOr
 		{ 
 			Operando taux = temp();
 			gera("OR", $e1.op, $e2.op, taux);
 			op = taux;
 		} 
-	)*	;
+	)?	;
 
 
 exprXor returns[Operando op] :
@@ -222,13 +222,13 @@ exprXor returns[Operando op] :
 		op = $e1.op;
 	}
 	(
-		'xor' e2=exprAnd
+		'xor' e2=exprXor
 		{ 
 			Operando taux = temp();
 			gera("XOR", $e1.op, $e2.op, taux);
 			op = taux;
 		}
-	)*	;
+	)?	;
 
 exprAnd returns[Operando op] :
 	e1=exprEqu
@@ -236,13 +236,13 @@ exprAnd returns[Operando op] :
 		op = $e1.op;
 	}
 	(
-		'and' e2=exprEqu
+		'and' e2=exprAnd
 		{ 
 			Operando taux = temp();
 			gera("AND", $e1.op, $e2.op, taux);
 			op = taux;
 		} 
-	)*	;
+	)?	;
 
 exprEqu returns[Operando op] :
 	e1=exprRel
@@ -250,19 +250,19 @@ exprEqu returns[Operando op] :
 		op = $e1.op;
 	}
 	(
-		'=' e2=exprRel
+		'=' e2=exprEqu
 		{ 
 			Operando taux = temp();
 			gera("SEQ", $e1.op, $e2.op, taux); //Set on Equal
 			op = taux;
 		} |
-		'!=' e2=exprRel
+		'!=' e2=exprEqu
 		{ 
 			Operando taux = temp();
 			gera("SNE", $e1.op, $e2.op, taux); //Set on Diff
 			op = taux;
 		} 
-	)*	;
+	)?	;
 
 exprRel returns[Operando op] :
 	e1=exprShift
@@ -270,31 +270,31 @@ exprRel returns[Operando op] :
 		op = $e1.op;
 	}
 	(
-		'<' e2=exprShift
+		'<' e2=exprRel
 		{ 
 			Operando taux = temp();
 			gera("SLT", $e1.op, $e2.op, taux); //Set on Less Than
 			op = taux;
 		} |
-		'<=' e2=exprShift
+		'<=' e2=exprRel
 		{ 
 			Operando taux = temp();
 			gera("SLE", $e1.op, $e2.op, taux); //Set on Less Than or Equal
 			op = taux;
 		} |
-		'>' e2=exprShift
+		'>' e2=exprRel
 		{ 
 			Operando taux = temp();
 			gera("SGT", $e1.op, $e2.op, taux); //Set on Greater Than
 			op = taux;
 		} |
-		'>=' e2=exprShift
+		'>=' e2=exprRel
 		{ 
 			Operando taux = temp();
 			gera("SGE", $e1.op, $e2.op, taux); //Set on Greater Than or Equal
 			op = taux;
 		}
-	)*	;
+	)?	;
 
 exprShift returns[Operando op] :
 	e1=exprSum
@@ -302,19 +302,19 @@ exprShift returns[Operando op] :
 		op = $e1.op;
 	}
 	(
-		'<<' e2=exprSum
+		'<<' e2=exprShift
 		{ 
 			Operando taux = temp();
 			gera("SLL", $e1.op, $e2.op, taux); //Shift Left Logical
 			op = taux;
 		} |
-		'>>' e2=exprSum
+		'>>' e2=exprShift
 		{ 
 			Operando taux = temp();
 			gera("SRL", $e1.op, $e2.op, taux); //Shift Right Logical
 			op = taux;
 		} 
-	)*	;
+	)?	;
 
 
 exprSum returns[Operando op] :
@@ -344,19 +344,19 @@ exprMul	returns[Operando op] :
 		op = $e1.op;
 	}
 	(
-		'*' e2=exprPow
+		'*' e2=exprMul
 		{ 
 			Operando taux = temp();
 			gera("MUL", $e1.op, $e2.op, taux);
 			op = taux;
 		} |
-		'/' e2=exprPow
+		'/' e2=exprMul
 		{
 			Operando taux = temp();
 			gera("DIV", $e1.op, $e2.op, taux);
 			op = taux;
 		}
-	)*	;
+	)?	;
 	
 exprPow returns[Operando op] : 
 	e1=factor
@@ -364,13 +364,13 @@ exprPow returns[Operando op] :
 		op = $e1.op;
 	}
 	(
-		'**' e2=factor
+		'**' e2=exprPow
 		{
 			Operando taux = temp();
 			gera("EXP", $e1.op, $e2.op, taux);
 			op = taux;
 		}
-	)* ;
+	)? ;
 
 factor returns[Operando op] :	
 	'(' e=expr ')' 
