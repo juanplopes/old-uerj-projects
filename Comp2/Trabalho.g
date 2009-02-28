@@ -200,20 +200,19 @@ expr returns[Operando op] :
 		op = $e.op;
 	} ;
 
-
 exprOr returns[Operando op] :
 	e1=exprXor
 	{
 		op = $e1.op;
 	}
 	(
-		'or' e2=exprOr
+		'|' e2=exprXor
 		{ 
 			Operando taux = temp();
 			gera("OR", op, $e2.op, taux);
 			op = taux;
 		} 
-	)?	;
+	)*	;
 
 
 exprXor returns[Operando op] :
@@ -236,13 +235,14 @@ exprAnd returns[Operando op] :
 		op = $e1.op;
 	}
 	(
-		'and' e2=exprEqu
+		'&' e2=exprEqu
 		{ 
 			Operando taux = temp();
 			gera("AND", op, $e2.op, taux);
 			op = taux;
 		} 
 	)*	;
+
 
 exprEqu returns[Operando op] :
 	e1=exprRel
