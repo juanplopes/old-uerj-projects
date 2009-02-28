@@ -323,19 +323,19 @@ exprSum returns[Operando op] :
 		op = $e1.op;
 	}
 	(
-		'+' e2=exprMul
+		'+' e2=exprSum
 		{ 
 			Operando taux = temp();
 			gera("ADD", $e1.op, $e2.op, taux);
 			op = taux;
 		} |
-		'-' e2=exprMul
+		'-' e2=exprSum
 		{
 			Operando taux = temp();
 			gera("SUB", $e1.op, $e2.op, taux);
 			op = taux;
 		}
-	)*	;
+	)?	;
 
 
 exprMul	returns[Operando op] :
