@@ -113,6 +113,7 @@ prog:	list '.'
 		// Entre chaves temos a ação associada à regra P -> L '.'
 		// Nesse caso, imprime a lista de quádruplas
 		{ 
+			gera("NOP", null, null, null);
 			for (Integer i = 0; i < quads.size(); i++) {
 			    System.out.print(i + "\t");
 			    System.out.println(quads.get(i).toString());
