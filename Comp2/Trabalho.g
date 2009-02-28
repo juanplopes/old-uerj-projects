@@ -253,13 +253,13 @@ exprEqu returns[Operando op] :
 		'=' e2=exprRel
 		{ 
 			Operando taux = temp();
-			gera("SOE", $e1.op, $e2.op, taux); //Set on Equal
+			gera("SEQ", $e1.op, $e2.op, taux); //Set on Equal
 			op = taux;
 		} |
 		'!=' e2=exprRel
 		{ 
 			Operando taux = temp();
-			gera("SOD", $e1.op, $e2.op, taux); //Set on Diff
+			gera("SNE", $e1.op, $e2.op, taux); //Set on Diff
 			op = taux;
 		} 
 	)*	;
@@ -279,7 +279,7 @@ exprRel returns[Operando op] :
 		'<=' e2=exprShift
 		{ 
 			Operando taux = temp();
-			gera("SLTE", $e1.op, $e2.op, taux); //Set on Less Than or Equal
+			gera("SLE", $e1.op, $e2.op, taux); //Set on Less Than or Equal
 			op = taux;
 		} |
 		'>' e2=exprShift
@@ -291,7 +291,7 @@ exprRel returns[Operando op] :
 		'>=' e2=exprShift
 		{ 
 			Operando taux = temp();
-			gera("SGTE", $e1.op, $e2.op, taux); //Set on Greater Than or Equal
+			gera("SGE", $e1.op, $e2.op, taux); //Set on Greater Than or Equal
 			op = taux;
 		}
 	)*	;
