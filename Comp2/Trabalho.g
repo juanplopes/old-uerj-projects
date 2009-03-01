@@ -171,22 +171,22 @@ stat scope {
 	{
 		remenda($m1.quad, "JF", $e.op, mem($stat::quad), null);
 	} |	
-	'for' forInit ';' n1=n c=forCond m1=m ';' i1=forIncrement 'do' st2=forStatements 'enddo'
+	'for' forInit ';' n forCond m ';' forIncrement 'do' forStatements 'enddo'
 	{
-		remendaFor($i1.quad, $i1.nquads, $st2.end);
-		gera("J", mem($c.quad), null, null);
-		remenda($m1.quad, "JF", $c.op, mem(quads.size()), null);
+		remendaFor($forIncrement.quad, $forIncrement.nquads, $forStatements.end);
+		gera("J", mem($forCond.quad), null, null);
+		remenda($m.quad, "JF", $forCond.op, mem(quads.size()), null);
 	} |
 	
-	'while' n1=n e=expr m1=m 'do' stat 'enddo'
+	'while' n expr m 'do' stat 'enddo'
 	{
-		gera("J", mem($n1.quad), null, null);
-		remenda($m1.quad, "JF", $e.op, mem(quads.size()), null);
+		gera("J", mem($n.quad), null, null);
+		remenda($m.quad, "JF", $expr.op, mem(quads.size()), null);
 	} |
 	
-	'repeat' n1=n stat 'until' e=expr
+	'repeat' n stat 'until' expr
 	{
-		gera("JF", $e.op, mem($n1.quad), null);
+		gera("JF", $expr.op, mem($n.quad), null);
 	} |
 	
 	'do' n1=n stat 'while' e=expr
