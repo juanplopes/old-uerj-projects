@@ -175,7 +175,7 @@ stat scope {
 	{
 		remendaFor($i1.quad, $i1.nquads, $st2.end);
 		gera("J", mem($c.quad), null, null);
-		remenda($m1.quad, "JF", $e.op, mem(quads.size()), null);
+		remenda($m1.quad, "JF", $c.op, mem(quads.size()), null);
 	} |
 	
 	'while' n1=n e=expr m1=m 'do' stat 'enddo'
@@ -206,11 +206,13 @@ forInit	:
 		gera("MOV", $v1.op, $e1.op, null);
 	} ;
 
-forCond	returns[Integer quad] :
+forCond	returns[Integer quad, Operando op] :
 	{
 		$quad = quads.size();
 	}	
-	e=expr
+	e=expr {
+		$op = $e.op;
+	}
 	;
 
 forIncrement returns[int quad, int nquads] :
