@@ -88,6 +88,14 @@ options { k=1; }
 		q.op3 = op3;
 	}
 	
+	//Esse método faz o corpo do for ser executado antes do seu incremento.
+	public void remendaFor(int incStart, int incSize, int statEnd) {
+		for (int i=0; i<incSize; i++) {
+			Quad q = quads.remove(incStart);
+			quads.add(statEnd - 1, q);
+		}
+	}
+	
 	public Operando aloca(String var) 
 	{
 		if (!simbs.containsKey(var))
@@ -138,29 +146,37 @@ list
                       S -> 'repeat' S 'until' E
                       s -> 'do' S 'while' E
   */
-stat :
+stat scope {
+		Integer quad;
+	} :
 	v=var ':=' e=expr
 	{ 
 		gera("MOV", $v.op, $e.op, null); 
 	} |	
 	
-	'begin' list 'end' |
+	'begin' list 'end' | 
 	
 	'if' e=expr 'then' m1=m stat 
 	{
-		Integer quad = quads.size();
+		$stat::quad = quads.size();
 	}
 	(
 		'else' m2=m stat
 		{
 			remenda($m2.quad, "J", mem(quads.size()), null, null);
-			quad = $m2.quad + 1;
+			$stat::quad = $m2.quad + 1;
 		}
 	)?
 	'endif'
 	{
-		remenda($m1.quad, "JF", $e.op, mem(quad), null);
+		remenda($m1.quad, "JF", $e.op, mem($stat::quad), null);
 	} |	
+	'for' forInit';' n1=n c=forCond m1=m ';' i1=forIncrement 'do' st2=forStatements 'enddo'
+	{
+		remendaFor($i1.quad, $i1.nquads, $st2.end);
+		gera("J", mem($c.quad), null, null);
+		remenda($m1.quad, "JF", $e.op, mem(quads.size()), null);
+	} |
 	
 	'while' n1=n e=expr m1=m 'do' stat 'enddo'
 	{
@@ -176,7 +192,46 @@ stat :
 	'do' n1=n stat 'while' e=expr
 	{
 		gera("JT", $e.op, mem($n1.quad), null);
+	} |
+	'print' e1=expr //Comando de impressão para testes.
+	{
+		gera("OUT", $e.op, null, null);
+	}
+	;
+
+// $<ForHelperRules
+forInit	:
+	v1=var ':=' e1=expr
+	{
+		gera("MOV", $v1.op, $e1.op, null);
 	} ;
+
+forCond	returns[Integer quad] :
+	{
+		$quad = quads.size();
+	}	
+	e=expr
+	;
+
+forIncrement returns[int quad, int nquads] :
+	{
+		$quad = quads.size();
+	}	
+		v=var ':=' e=expr
+	{
+		gera("MOV", $v.op, $e.op, null);
+	}
+	{
+		$nquads = quads.size() - $quad;
+	} ;
+
+forStatements returns [int end]:
+	stat
+	{
+		$end = quads.size();
+	} ;
+// $>	
+
 	
 /* Essa regra equivale à regra M -> e (epsilon), ou seja, não corresponde à trecho de código nenhum.
   Porém, é necessário para "guardar" a posição de uma quádrupla que requer preenchimento posterior.
@@ -189,7 +244,7 @@ m returns[Integer quad] :
 	
 n returns[Integer quad] :
 	{ 
-		quad = quad = quads.size();
+		quad = quads.size();
 	} ;
 
 // $<ExprToFactor
@@ -415,7 +470,7 @@ ID
 	: LETTER ( DIGIT | LETTER )*
 	;
 
-NUMBER : ('-'|'+')?DIGIT*;
+NUMBER : DIGIT+;
 	
 WHITESPACE 	
 	: ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ 
