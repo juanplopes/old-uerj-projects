@@ -171,7 +171,7 @@ stat scope {
 	{
 		remenda($m1.quad, "JF", $e.op, mem($stat::quad), null);
 	} |	
-	'for' forInit';' n1=n c=forCond m1=m ';' i1=forIncrement 'do' st2=forStatements 'enddo'
+	'for' forInit ';' n1=n c=forCond m1=m ';' i1=forIncrement 'do' st2=forStatements 'enddo'
 	{
 		remendaFor($i1.quad, $i1.nquads, $st2.end);
 		gera("J", mem($c.quad), null, null);
@@ -195,7 +195,7 @@ stat scope {
 	} |
 	'print' e1=expr //Comando de impressão para testes.
 	{
-		gera("OUT", $e.op, null, null);
+		gera("OUT", $e1.op, null, null);
 	}
 	;
 
