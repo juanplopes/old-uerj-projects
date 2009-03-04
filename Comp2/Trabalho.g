@@ -438,7 +438,7 @@ exprMul	returns[Operando op]
 				$op.value = $e1.op.value \% $e2.op.value; //O ANTLR nos obriga a escapar o símbolo de módulo.
 			} else {
 				Operando taux = temp();
-				gera("DIV", $op, $e2.op, taux);
+				gera("MOD", $op, $e2.op, taux);
 				$op = taux;
 			}
 		}
