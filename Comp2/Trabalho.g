@@ -117,148 +117,127 @@ options { k=1; }
 
 /* A regra programa é uma lista de comandos encerrados com '.'
  * Equivale à regra P -> L '.' */
-prog:	list '.'
-		// Entre chaves temos a ação associada à regra P -> L '.'
-		// Nesse caso, imprime a lista de quádruplas
-		{ 
-			gera("NOP", null, null, null);
-			for (Integer i = 0; i < quads.size(); i++) {
-			    System.out.print(i + "\t");
-			    System.out.println(quads.get(i).toString());
-			}
-		};
+prog
+	: list '.'
+	// Entre chaves temos a ação associada à regra P -> L '.'
+	// Nesse caso, imprime a lista de quádruplas
+	{ 
+		gera("NOP", null, null, null);
+		for (Integer i = 0; i < quads.size(); i++) {
+		    System.out.print(i + "\t");
+		    System.out.println(quads.get(i).toString());
+		}
+	};
 
 /* A regra lista é uma sequência de comandos separados por ';'.
    Equivale às regras L -> S; L e L -> S
    Note que o último comando não é seguido por ';'
 */
 list	
-	:	stat (';' stat)* 
-		// Não possui ação associada
+	: stat (';' stat)*  // Não possui ação associada
 	;
 
-/* A regra comando define os diferentes comandos da linguagem
- * Equivale às regras S -> V ':=' E
-                      S -> 'begin' L 'end'
-                      S -> 'if' E 'then' M S 'endif'
-                      S -> 'if' E 'then' M S 'else' M S 'endif'
-                      S -> 'while' N E M 'do' S 'enddo'
-                      S -> 'repeat' S 'until' E
-                      s -> 'do' S 'while' E
-  */
-stat scope {
-		Integer quad;
-	} :
-	v=var ':=' e=expr
-	{ 
-		gera("MOV", $v.op, $e.op, null); 
-	} |	
-	
-	'begin' list 'end' | 
-	
-	'if' e=expr 'then' m1=m stat 
-	{
-		$stat::quad = quads.size();
-	}
+stat
+	: attribution
+	| ifThenElse
+	| 'begin' list 'end'
+	| forLoop
+	| whileLoop
+	| repeatLoop
+	| doLoop
+	| print
+	;
+
+// $<Statements
+attribution
+	: var ':=' expr
+	{ gera("MOV", $var.op, $expr.op, null); };
+
+ifThenElse
+@init {
+	Integer quad;
+}	
+	: 'if' expr 'then' m1=m stat
+	{ quad = quads.size(); }
 	(
 		'else' m2=m stat
 		{
 			remenda($m2.quad, "J", mem(quads.size()-$m2.quad), null, null);
-			$stat::quad = $m2.quad + 1;
+			quad = $m2.quad + 1;
 		}
 	)?
 	'endif'
-	{
-		remenda($m1.quad, "JF", $e.op, mem($stat::quad-$m1.quad), null);
-	} |	
-	'for' forInit ';' n forCond m ';' forIncrement 'do' forStatements 'enddo'
+	{ remenda($m1.quad, "JF", $expr.op, mem(quad-$m1.quad), null); };
+	
+forLoop
+	: 'for' forInit ';' n forCond m ';' forIncrement 'do' forStatements 'enddo'
 	{
 		remendaFor($forIncrement.quad, $forIncrement.nquads, $forStatements.end);
 		gera("J", mem($n.quad-quads.size()), null, null);
 		remenda($m.quad, "JF", $forCond.op, mem(quads.size()-$m.quad), null);
-	} |
-	
-	'while' n expr m 'do' stat 'enddo'
+	};
+
+whileLoop
+	: 'while' n expr m 'do' stat 'enddo'
 	{
 		gera("J", mem(quads.size()-$n.quad), null, null);
 		remenda($m.quad, "JF", $expr.op, mem(quads.size()-$m.quad), null);
-	} |
+	};
 	
-	'repeat' n stat 'until' expr
-	{
-		gera("JF", $expr.op, mem($n.quad-quads.size()), null);
-	} |
+repeatLoop 
+	: 'repeat' n stat 'until' expr
+	{ gera("JF", $expr.op, mem($n.quad-quads.size()), null); };
 	
-	'do' n stat 'while' e=expr
-	{
-		gera("JT", $e.op, mem($n.quad-quads.size()), null);
-	} |
-	'print' e1=expr //Comando de impressão para testes.
-	{
-		gera("OUT", $e1.op, null, null);
-	}
-	;
+doLoop
+	: 'do' n stat 'while' expr
+	{ gera("JT", $expr.op, mem($n.quad-quads.size()), null); };
+	
+print
+	: 'print' expr //Comando de impressão para testes.
+	{ gera("OUT", $expr.op, null, null); };
+// $>
 
 // $<ForHelperRules
 forInit	:
 	v1=var ':=' e1=expr
-	{
-		gera("MOV", $v1.op, $e1.op, null);
-	} ;
+	{ gera("MOV", $v1.op, $e1.op, null); };
 
-forCond	returns[Operando op] :
-	e=expr {
-		$op = $e.op;
-	}
-	;
+forCond	returns[Operando op]
+	: expr { $op = $expr.op; };
 
-forIncrement returns[int quad, int nquads] :
-	{
-		$quad = quads.size();
-	}	
-		v=var ':=' e=expr
-	{
-		gera("MOV", $v.op, $e.op, null);
-	}
-	{
-		$nquads = quads.size() - $quad;
-	} ;
+forIncrement returns[int quad, int nquads]
+@init { $quad = quads.size(); }	
+@after { $nquads = quads.size() - $quad; }
+	: attribution ;
 
-forStatements returns [int end]:
-	stat
-	{
-		$end = quads.size();
-	} ;
+forStatements returns [int end]
+	: stat
+	{ $end = quads.size(); };
 // $>	
 
 	
 /* Essa regra equivale à regra M -> e (epsilon), ou seja, não corresponde à trecho de código nenhum.
   Porém, é necessário para "guardar" a posição de uma quádrupla que requer preenchimento posterior.
  */
-m returns[Integer quad] :
+m returns[Integer quad]
+	:
 	{ 
 		$quad = quads.size();
 		gera("", null, null, null);
-	} ;
+	};
 	
-n returns[Integer quad] :
-	{ 
-		$quad = quads.size();
-	} ;
+n returns[Integer quad]
+	:
+	{ $quad = quads.size(); };
 
 // $<ExprToFactor
+expr returns[Operando op]
+	: exprOr
+	{ $op = $exprOr.op;	};
 
-expr returns[Operando op] : 
-	e=exprOr
-	{
-		$op = $e.op;
-	} ;
-
-exprOr returns[Operando op] :
-	e1=exprXor
-	{
-		$op = $e1.op;
-	}
+exprOr returns[Operando op]
+	: e1=exprXor
+	{ $op = $e1.op; }
 	(
 		'|' e2=exprXor
 		{
@@ -271,15 +250,11 @@ exprOr returns[Operando op] :
 				$op = taux;
 			}
 		} 
-	)*	;
+	)*;
 
-
-
-exprAnd returns[Operando op] :
-	e1=exprEqu
-	{
-		$op = $e1.op;
-	}
+exprAnd returns[Operando op]
+	: e1=exprEqu
+	{ $op = $e1.op; }
 	(
 		'&' e2=exprEqu
 		{
@@ -292,12 +267,10 @@ exprAnd returns[Operando op] :
 				$op = taux;
 			}
 		} 
-	)*	;
-exprXor returns[Operando op] :
-	e1=exprAnd
-	{
-		$op = $e1.op;
-	}
+	)*;
+exprXor returns[Operando op]
+	: e1=exprAnd
+	{ $op = $e1.op; }
 	(
 		'^' e2=exprAnd
 		{
@@ -310,15 +283,13 @@ exprXor returns[Operando op] :
 				$op = taux;
 			}
 		}
-	)*	;
+	)*;
 
 
 
-exprEqu returns[Operando op] :
-	e1=exprRel
-	{
-		$op = $e1.op;
-	}
+exprEqu returns[Operando op]
+	: e1=exprRel
+	{ $op = $e1.op; }
 	(
 		'=' e2=exprRel
 		{
@@ -330,8 +301,8 @@ exprEqu returns[Operando op] :
 				gera("SEQ", $op, $e2.op, taux); //Set on Equal
 				$op = taux;
 			}
-		} |
-		'!=' e2=exprRel
+		}
+		| '!=' e2=exprRel
 		{
 			if ($e1.op.imediato && $e2.op.imediato) {
 				$e1.op.value = ($e1.op.value != $e2.op.value) ? 1 : 0;
@@ -342,13 +313,11 @@ exprEqu returns[Operando op] :
 				$op = taux;
 			}
 		} 
-	)*	;
+	)*;
 
-exprRel returns[Operando op] :
-	e1=exprShift
-	{
-		$op = $e1.op;
-	}
+exprRel returns[Operando op]
+	: e1=exprShift
+	{ $op = $e1.op; }
 	(
 		'<' e2=exprShift
 		{
@@ -360,8 +329,8 @@ exprRel returns[Operando op] :
 				gera("SLT", $op, $e2.op, taux); //Set on Less Than
 				$op = taux;
 			}
-		} |
-		'<=' e2=exprShift
+		}
+		| '<=' e2=exprShift
 		{ 
 			if ($e1.op.imediato && $e2.op.imediato) {
 				$e1.op.value = ($e1.op.value <= $e2.op.value) ? 1 : 0;
@@ -371,8 +340,8 @@ exprRel returns[Operando op] :
 				gera("SLE", $op, $e2.op, taux); //Set on Less Than or Equal
 				$op = taux;
 			}
-		} |
-		'>' e2=exprShift
+		}
+		| '>' e2=exprShift
 		{
 			if ($e1.op.imediato && $e2.op.imediato) {
 				$e1.op.value = ($e1.op.value > $e2.op.value) ? 1 : 0;
@@ -382,8 +351,8 @@ exprRel returns[Operando op] :
 				gera("SGT", $op, $e2.op, taux); //Set on Greater Than
 				$op = taux;
 			}
-		} |
-		'>=' e2=exprShift
+		}
+		| '>=' e2=exprShift
 		{
 			if ($e1.op.imediato && $e2.op.imediato) {
 				$e1.op.value = ($e1.op.value >= $e2.op.value) ? 1 : 0;
@@ -394,12 +363,11 @@ exprRel returns[Operando op] :
 				$op = taux;
 			}
 		}
-	)*	;
-exprShift returns[Operando op] :
-	e1=exprSum
-	{
-		$op = $e1.op;
-	}
+	)*;
+	
+exprShift returns[Operando op]
+	: e1=exprSum
+	{ $op = $e1.op; }
 	(
 		'<<' e2=exprSum
 		{ 
@@ -411,25 +379,23 @@ exprShift returns[Operando op] :
 				gera("SLL", $op, $e2.op, taux); //Shift Left Logical
 				$op = taux;
 			}
-		} |
-		'>>' e2=exprSum
+		}
+		| '>>' e2=exprSum
 		{ 
 			if ($e1.op.imediato && $e2.op.imediato) {
 				$e1.op.value = $e1.op.value >> $e2.op.value;
 				$op = $e1.op;
-			} else {
+							} else {
 				Operando taux = temp();
 				gera("SRL", $op, $e2.op, taux); //Shift Right Logical
 				$op = taux;
 			}
 		} 
-	)*	;
+	)*;
 
-exprSum returns[Operando op] :
-	e1=exprMul
-	{
-		$op = $e1.op;
-	}
+exprSum returns[Operando op]
+	: e1=exprMul
+	{ $op = $e1.op; }
 	(
 		'+' e2=exprMul
 		{ 
@@ -441,8 +407,8 @@ exprSum returns[Operando op] :
 				gera("ADD", $op, $e2.op, taux);
 				$op = taux;
 			}
-		} |
-		'-' e2=exprMul
+		}
+		| '-' e2=exprMul
 		{
 			if ($e1.op.imediato && $e2.op.imediato) {
 				$e1.op.value = $e1.op.value - $e2.op.value;
@@ -453,13 +419,11 @@ exprSum returns[Operando op] :
 				$op = taux;
 			}
 		}
-	)*	;
+	)*;
 
-exprMul	returns[Operando op] :
-	e1=exprPow
-	{
-		$op = $e1.op;
-	}
+exprMul	returns[Operando op]
+	: e1=exprPow
+	{ $op = $e1.op; }
 	(
 		'*' e2=exprPow
 		{ 
@@ -471,8 +435,8 @@ exprMul	returns[Operando op] :
 				gera("MUL", $op, $e2.op, taux);
 				$op = taux;
 			}
-		} |
-		'/' e2=exprPow
+		}
+		| '/' e2=exprPow
 		{
 			if ($e1.op.imediato && $e2.op.imediato) {
 				$e1.op.value = $e1.op.value / $e2.op.value;
@@ -483,15 +447,22 @@ exprMul	returns[Operando op] :
 				$op = taux;
 			}
 		}
-	)*	;
-
-
+		| '%' e2=exprPow
+		{
+			if ($e1.op.imediato && $e2.op.imediato) {
+				$e1.op.value = $e1.op.value \% $e2.op.value; //O ANTLR nos obriga a escapar o símbolo de módulo.
+				$op = $e1.op;
+			} else {
+				Operando taux = temp();
+				gera("DIV", $op, $e2.op, taux);
+				$op = taux;
+			}
+		}
+	)*;
 	
-exprPow returns[Operando op] : 
-	e1=unary
-	{
-		$op = $e1.op;
-	}
+exprPow returns[Operando op]
+	: e1=unary
+	{ $op = $e1.op; }
 	(
 		'**' e2=unary
 		{
@@ -504,14 +475,12 @@ exprPow returns[Operando op] :
 				$op = taux;
 			}
 		}
-	)* ;
+	)*;
 
-unary returns[Operando op] : 
-	e1=factor 
-	{
-		$op = $e1.op;
-	} |
-	'-' e2=unary
+unary returns[Operando op]
+	: e1=factor 
+	{ $op = $e1.op; }
+	| '-' e2=unary
 	{
 		if ($e2.op.imediato) {
 			$e2.op.value = - $e2.op.value;
@@ -521,8 +490,8 @@ unary returns[Operando op] :
 			gera("NEG", $op, $e2.op, taux);
 			$op = taux;
 		}
-	} |
-	'+' e2=unary
+	}
+	| '+' e2=unary
 	{
 		if ($e2.op.imediato)
 			$op = $e2.op;
@@ -530,8 +499,8 @@ unary returns[Operando op] :
 			Operando taux = temp();
 			$op = taux;
 		}
-	} |
-	'~' e2=unary
+	}
+	| '~' e2=unary
 	{
 		if ($e2.op.imediato) {
 			$e2.op.value = ~ $e2.op.value;
@@ -541,8 +510,8 @@ unary returns[Operando op] :
 			gera("NOT", $op, $e2.op, taux);
 			$op = taux;
 		}
-	} |
-	'!' e2=unary
+	}
+	| '!' e2=unary
 	{
 		if ($e2.op.imediato) {
 			$e2.op.value = ($e2.op.value == 0) ? 1 : 0;
@@ -552,65 +521,55 @@ unary returns[Operando op] :
 			gera("LNOT", $op, $e2.op, taux);
 			$op = taux;
 		}
-	}
-	;
+	};
 
-factor returns[Operando op] :	
-	'(' e=expr ')' 
+factor returns[Operando op]
+	: '(' e=expr ')' 
 	{
 		$op = $e.op;
-	} |	
-	
-	v=var
+	}
+	| v=var
 	{
 		$op = $v.op;
-	} |
-	
-	v=literal
+	}
+	| v=literal
 	{
 		$op = $v.op;
-	} ;
-	
-	
-
+	};
 // $>
 
 /* Regra V -> id */	
-var	returns[Operando op] :
-	ID
-	{ 
+var	returns[Operando op]
+	: ID
+	{
 		$op = aloca($ID.text);
 	};
 
-literal returns[Operando op] :
-	NUMBER
+literal returns[Operando op]
+	: NUMBER
 	{
 		$op = imed(Integer.parseInt($NUMBER.text));
 	};
 	
-
 /*
 Essa parte do código representa o analisador léxico.
 A convenção, estabelecida como regra pelo ANTLR, diz que regras sIntegeráticas
 começam com letra minúscula, enquanto que os tokens léxicos começam com letra MAIÚSCULA
  */
-	
-ID	
-	: LETTER ( DIGIT | LETTER )*
-	;
 
-NUMBER : DIGIT+;
+ID	
+	: LETTER ( DIGIT | LETTER )*;
+
+NUMBER
+	: DIGIT+;
 	
 WHITESPACE 	
 	: ( '\t' | ' ' | '\r' | '\n'| '\u000C' )+ 
+	{ $channel = HIDDEN; };
 	
-	// Despreza espaços em branco
-	{ $channel = HIDDEN; } ;
-	
-fragment DIGIT	
-	: '0'..'9' ;
+fragment DIGIT
+	: '0'..'9';
 	
 fragment LETTER
 	: 'a'..'z'
-	| 'A'..'Z'
-	;
+	| 'A'..'Z';
