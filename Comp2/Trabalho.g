@@ -163,35 +163,35 @@ stat scope {
 	(
 		'else' m2=m stat
 		{
-			remenda($m2.quad, "J", mem(quads.size()), null, null);
+			remenda($m2.quad, "J", mem(quads.size()-$m2.quad), null, null);
 			$stat::quad = $m2.quad + 1;
 		}
 	)?
 	'endif'
 	{
-		remenda($m1.quad, "JF", $e.op, mem($stat::quad), null);
+		remenda($m1.quad, "JF", $e.op, mem($stat::quad-$m1.quad), null);
 	} |	
 	'for' forInit ';' n forCond m ';' forIncrement 'do' forStatements 'enddo'
 	{
 		remendaFor($forIncrement.quad, $forIncrement.nquads, $forStatements.end);
-		gera("J", mem($forCond.quad), null, null);
-		remenda($m.quad, "JF", $forCond.op, mem(quads.size()), null);
+		gera("J", mem($n.quad-quads.size()), null, null);
+		remenda($m.quad, "JF", $forCond.op, mem(quads.size()-$m.quad), null);
 	} |
 	
 	'while' n expr m 'do' stat 'enddo'
 	{
-		gera("J", mem($n.quad), null, null);
-		remenda($m.quad, "JF", $expr.op, mem(quads.size()), null);
+		gera("J", mem(quads.size()-$n.quad), null, null);
+		remenda($m.quad, "JF", $expr.op, mem(quads.size()-$m.quad), null);
 	} |
 	
 	'repeat' n stat 'until' expr
 	{
-		gera("JF", $expr.op, mem($n.quad), null);
+		gera("JF", $expr.op, mem($n.quad-quads.size()), null);
 	} |
 	
-	'do' n1=n stat 'while' e=expr
+	'do' n stat 'while' e=expr
 	{
-		gera("JT", $e.op, mem($n1.quad), null);
+		gera("JT", $e.op, mem($n.quad-quads.size()), null);
 	} |
 	'print' e1=expr //Comando de impressão para testes.
 	{
@@ -206,10 +206,7 @@ forInit	:
 		gera("MOV", $v1.op, $e1.op, null);
 	} ;
 
-forCond	returns[Integer quad, Operando op] :
-	{
-		$quad = quads.size();
-	}	
+forCond	returns[Operando op] :
 	e=expr {
 		$op = $e.op;
 	}
