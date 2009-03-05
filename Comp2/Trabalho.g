@@ -162,35 +162,35 @@ ifThenElse
 	(
 		'else' m2=m stat
 		{
-			remenda($m2.quad, "J", mem(quads.size()-$m2.quad), null, null);
+			remenda($m2.quad, "J", imed(quads.size()-$m2.quad), null, null);
 			quad = $m2.quad + 1;
 		}
 	)?
 	'endif'
-	{ remenda($m1.quad, "JF", $expr.op, mem(quad-$m1.quad), null); };
+	{ remenda($m1.quad, "JF", $expr.op, imed(quad-$m1.quad), null); };
 	
 forLoop
 	: 'for' forInit ';' n forCond m ';' forIncrement 'do' forStatements 'enddo'
 	{
 		remendaFor($forIncrement.quad, $forIncrement.nquads, $forStatements.end);
-		gera("J", mem($n.quad-quads.size()), null, null);
-		remenda($m.quad, "JF", $forCond.op, mem(quads.size()-$m.quad), null);
+		gera("J", imed($n.quad-quads.size()), null, null);
+		remenda($m.quad, "JF", $forCond.op, imed(quads.size()-$m.quad), null);
 	};
 
 whileLoop
 	: 'while' n expr m 'do' stat 'enddo'
 	{
-		gera("J", mem(quads.size()-$n.quad), null, null);
-		remenda($m.quad, "JF", $expr.op, mem(quads.size()-$m.quad), null);
+		gera("J", imed(quads.size()-$n.quad), null, null);
+		remenda($m.quad, "JF", $expr.op, imed(quads.size()-$m.quad), null);
 	};
 	
 repeatLoop 
 	: 'repeat' n stat 'until' expr
-	{ gera("JF", $expr.op, mem($n.quad-quads.size()), null); };
+	{ gera("JF", $expr.op, imed($n.quad-quads.size()), null); };
 	
 doLoop
 	: 'do' n stat 'while' expr
-	{ gera("JT", $expr.op, mem($n.quad-quads.size()), null); };
+	{ gera("JT", $expr.op, imed($n.quad-quads.size()), null); };
 	
 print
 	: 'print' expr //Comando de impressão para testes.
