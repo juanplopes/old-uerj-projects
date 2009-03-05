@@ -304,7 +304,7 @@ exprEqu returns[Operando op]
 				$op.value = ($e1.op.value != $e2.op.value) ? 1 : 0;
 			} else {
 				Operando taux = temp();
-				gera("SNE", $op, $e2.op, taux); //Set on Diff
+				gera("SNE", $op, $e2.op, taux); //Set on Not Equal
 				$op = taux;
 			}
 		} 
@@ -490,7 +490,7 @@ unary returns[Operando op]
 			$op = $e2.op;
 		} else {
 			Operando taux = temp();
-			gera("NOT", $op, $e2.op, taux);
+			gera("NOT", $op, $e2.op, taux); //Bitwise NOT
 			$op = taux;
 		}
 	}
@@ -501,7 +501,7 @@ unary returns[Operando op]
 			$op = $e2.op;
 		} else {
 			Operando taux = temp();
-			gera("LNOT", $op, $e2.op, taux);
+			gera("LNOT", $op, $e2.op, taux); //Logical not
 			$op = taux;
 		}
 	};
