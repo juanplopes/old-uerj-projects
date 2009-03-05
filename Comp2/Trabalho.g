@@ -470,7 +470,7 @@ unary returns[Operando op]
 			$op = $e2.op;
 		} else {
 			Operando taux = temp();
-			gera("NEG", $op, $e2.op, taux);
+			gera("NEG", $e2.op, taux, null);
 			$op = taux;
 		}
 	}
@@ -490,7 +490,7 @@ unary returns[Operando op]
 			$op = $e2.op;
 		} else {
 			Operando taux = temp();
-			gera("NOT", $op, $e2.op, taux); //Bitwise NOT
+			gera("NOT", $e2.op, taux, null); //Bitwise NOT
 			$op = taux;
 		}
 	}
@@ -501,7 +501,7 @@ unary returns[Operando op]
 			$op = $e2.op;
 		} else {
 			Operando taux = temp();
-			gera("LNOT", $op, $e2.op, taux); //Logical not
+			gera("LNOT", $e2.op, taux, null); //Logical not
 			$op = taux;
 		}
 	};
