@@ -170,7 +170,7 @@ ifThenElse
 	{ remenda($m1.quad, "JF", $expr.op, imed(quad-$m1.quad), null); };
 	
 forLoop
-	: 'for' forInit ';' n forCond m ';' forIncrement 'do' forStatements 'enddo'
+	: 'for' attribution ';' n forCond m ';' forIncrement 'do' forStatements 'enddo'
 	{
 		remendaFor($forIncrement.quad, $forIncrement.nquads, $forStatements.end);
 		gera("J", imed($n.quad-quads.size()), null, null);
@@ -198,10 +198,6 @@ print
 // $>
 
 // $<ForHelperRules
-forInit	:
-	var ':=' expr
-	{ gera("MOV", $var.op, $expr.op, null); };
-
 forCond	returns[Operando op]
 	: expr { $op = $expr.op; };
 
