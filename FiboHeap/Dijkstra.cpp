@@ -10,6 +10,8 @@
 
 #include "FibonacciHeap.cpp"
 
+long countDjikstra;
+
 struct Edge {
     int dest, cost;
     Edge(int dest, int cost) : dest(dest), cost(cost) { }
@@ -35,14 +37,16 @@ struct ShortestPaths {
     std::vector<int> y;
     std::vector<int> p;
 
-    ShortestPaths(int n, int src) : src(src), y(n), p(n) { }
+    ShortestPaths(int n, int src) : src(src), y(n + 1), p(n + 1) { }
     
     ShortestPath* GetPath(int dest) {
         ShortestPath* result = new ShortestPath(y[dest]);
         for(int i=dest; p[i] > -1; i = p[i]) {
             result->path.push_front(i);   
+            countDjikstra++;
         }
         result->path.push_front(src);
+        countDjikstra++;
         return result;
     }
     
@@ -51,10 +55,12 @@ struct ShortestPaths {
 struct Graph {
     std::vector<std::list<Edge> > G;
     int n;
-    Graph(int n) : n(n), G(n) { }
+    Graph(int n) : n(n + 1), G(n + 1) { }
 
     void AddEdge(int src, int dest, int cost) {
-        this->G[src].push_back(Edge(dest, cost));   
+        this->G[src].push_back(Edge(dest, cost));
+        countDjikstra++;
+        cout << "adicionado vertice " << src << " " << dest << ", custo: " << cost << endl;   
     }
 
     ShortestPaths* Dijkstra(int src) {
@@ -65,8 +71,11 @@ struct Graph {
         int value = 0;        
         for(int i=0; i<this->n; i++) { 
             value = ((i==src)?0:INF);
-            y[i] = value; 
-            p[i] = -1; 
+            countDjikstra++;
+            y[i] = value;
+            countDjikstra++;
+            p[i] = -1;
+            countDjikstra++;
             nodes[i] = new FibonacciHeapNode(i, value);
             heap->insert(nodes[i]);
         }
@@ -76,10 +85,14 @@ struct Graph {
 
             for(std::list<Edge>::iterator j = this->G[node->data].begin(); j != this->G[node->data].end(); j++) {
                 int aux = y[node->data] + j->cost;
+                countDjikstra++;
                 if (aux < y[j->dest]) {
+                    countDjikstra++;
                     y[j->dest] = aux;
+                    countDjikstra++;
                     heap->decreaseKey(nodes[j->dest], aux);
-                    p[j->dest] = node->data;   
+                    p[j->dest] = node->data;
+                    countDjikstra++;
                 }
             }
         }
