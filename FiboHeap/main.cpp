@@ -1,19 +1,29 @@
+#define USE_WINDOWS2
+
 #include <iostream>
 #include <fstream>
-#include <time.h>
-#include <windows.h>
+
+#ifdef USE_WINDOWS
+    #include <windows.h>
+#else
+    #include <ctime>
+#endif
+
 #include "Dijkstra.cpp"
 
 using namespace std;
 
 double ftime() 
 {
+#ifdef USE_WINDOWS
 	double velocidade, valor;
-	
     QueryPerformanceFrequency((LARGE_INTEGER *) &velocidade);
 	QueryPerformanceCounter((LARGE_INTEGER *) &valor);
 	
-    return valor/velocidade;  
+    return (valor/velocidade)*1000;  
+#else
+    return clock();
+#endif
 }
 
 void miolo(bool semHeap, Graph* graph, int a, int b) {
@@ -35,7 +45,7 @@ void miolo(bool semHeap, Graph* graph, int a, int b) {
             
     double fim = ftime();
     
-    cout << "Tempo gasto para execucao: " << (fim - inicio) * 1000 << " milisegundos" << endl;
+    cout << "Tempo gasto para execucao: " << (fim - inicio) << " milisegundos" << endl;
     cout << "Numero de operacoes elementares (D+H) = " << countDijkstra << " + " << countHeap << " = " << countDijkstra + countHeap << endl;
     cout << endl;
 }
