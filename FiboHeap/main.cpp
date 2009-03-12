@@ -1,9 +1,7 @@
-#define USE_WINDOWS
-
 #include <iostream>
 #include <fstream>
 
-#ifdef USE_WINDOWS
+#ifdef WIN32
     #include <windows.h>
 #else
     #include <ctime>
@@ -15,7 +13,7 @@ using namespace std;
 
 double ftime() 
 {
-#ifdef USE_WINDOWS
+#ifdef WIN32
 	double velocidade, valor;
     QueryPerformanceFrequency((LARGE_INTEGER *) &velocidade);
 	QueryPerformanceCounter((LARGE_INTEGER *) &valor);
