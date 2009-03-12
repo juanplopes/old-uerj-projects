@@ -35,7 +35,6 @@ void miolo(bool semHeap, Graph* graph, int a, int b) {
             
     double fim = ftime();
     
-    cout << countOp1 << " " << countOp2 << endl;
     cout << "Tempo gasto para execucao: " << (fim - inicio) * 1000 << " milisegundos" << endl;
     cout << "Numero de operacoes elementares (D+H) = " << countDijkstra << " + " << countHeap << " = " << countDijkstra + countHeap << endl;
     cout << endl;

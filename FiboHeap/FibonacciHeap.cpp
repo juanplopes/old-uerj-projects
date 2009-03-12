@@ -1,7 +1,7 @@
 #include <iostream>
 #include <math.h>
 #include <vector>
-#define ONE_OVER_LOG_PHI 4.78497196678d
+#define ONE_OVER_LOG_PHI 4.78497196678f
 
 using namespace std;
 
@@ -139,9 +139,7 @@ class FibonacciHeap{
                     minNode = z->right;
                     countHeap++;
     
-                    temp = countHeap;
                     consolidate();
-                    countOp1 += countHeap - temp;
 
                 }
 
@@ -231,7 +229,13 @@ class FibonacciHeap{
         }
     
         void consolidate(){
-            int arraySize = nNodes;
+
+//          int arraySize = nNodes;
+            
+            int arraySize =
+                ((int) floor(log(nNodes) * ONE_OVER_LOG_PHI)) + 1;
+
+            
             countHeap++;
             vector<FibonacciHeapNode*> array(arraySize);
             countHeap++;
@@ -258,6 +262,7 @@ class FibonacciHeap{
                 }
             }
             
+
             // For each node in root list do...
             while (numRoots > 0) {
                 countHeap++;
@@ -267,6 +272,7 @@ class FibonacciHeap{
                 FibonacciHeapNode *next = x->right;
                 countHeap++;
                 // ..and see if there's another of the same degree.
+
                 for (;;) {
                     FibonacciHeapNode *y = array[d];
                     countHeap++;
@@ -288,6 +294,8 @@ class FibonacciHeap{
                     d++;
                     countHeap++;
                 }
+                
+
                 // Save this node for later when we might encounter another of the same degree.
                 array[d] = x;
                 countHeap++;
@@ -297,6 +305,9 @@ class FibonacciHeap{
                 numRoots--;
                 countHeap++;
             }
+
+            temp = countHeap;
+            
             // Set min to NULL (effectively losing the root list) and
             // reconstruct the root list from the array entries in array[].
             minNode = NULL;
@@ -336,6 +347,8 @@ class FibonacciHeap{
                        countHeap++;
                        }
             }
+            
+                                                            countOp1 += countHeap - temp;
         }
 
         void cascadingCut(FibonacciHeapNode* x){
