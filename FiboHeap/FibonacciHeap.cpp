@@ -5,8 +5,7 @@
 
 using namespace std;
 
-long countHeap;
-long countOp1, countOp2, temp;
+unsigned long long countHeap;
 
 class FibonacciHeapNode{
     public:
@@ -230,9 +229,9 @@ class FibonacciHeap{
     
         void consolidate(){
 
-//          int arraySize = nNodes;
+  //        int arraySize = nNodes;
             
-            int arraySize =
+           int arraySize =
                 ((int) floor(log(nNodes) * ONE_OVER_LOG_PHI)) + 1;
 
             
@@ -306,8 +305,7 @@ class FibonacciHeap{
                 countHeap++;
             }
 
-            temp = countHeap;
-            
+           
             // Set min to NULL (effectively losing the root list) and
             // reconstruct the root list from the array entries in array[].
             minNode = NULL;
@@ -348,7 +346,6 @@ class FibonacciHeap{
                        }
             }
             
-                                                            countOp1 += countHeap - temp;
         }
 
         void cascadingCut(FibonacciHeapNode* x){

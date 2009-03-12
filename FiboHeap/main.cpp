@@ -1,4 +1,4 @@
-#define USE_WINDOWS2
+#define USE_WINDOWS
 
 #include <iostream>
 #include <fstream>
@@ -30,7 +30,7 @@ void miolo(bool semHeap, Graph* graph, int a, int b) {
     cout << "*** DIJKSTRA " << (semHeap?"NORMAL":"COM HEAP") << " ***" << endl;
 
     double inicio = ftime();
-    countHeap = 0; countOp1 = 0; countOp2 = 0;
+    countHeap = 0;
     countDijkstra = 0;
 
     ShortestPaths* allPaths = (semHeap?graph->Dijkstra(a):graph->DijkstraHeap(a));
@@ -75,8 +75,8 @@ int main() {
     while(true) {
         cout << "Digite s (saida) e t (destino). 0 0 para sair" << endl;
         cin >> a >> b; if (!a && !b) break;
-        miolo(true, graph, a, b);
         miolo(false, graph, a, b);
+        miolo(true, graph, a, b);
     }
         
     delete(graph);

@@ -10,7 +10,7 @@
 
 #include "FibonacciHeap.cpp"
 
-long countDijkstra;
+unsigned long long countDijkstra;
 
 struct Edge {
     int dest, cost;
