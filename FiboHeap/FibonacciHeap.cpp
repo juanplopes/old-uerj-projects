@@ -6,6 +6,7 @@
 using namespace std;
 
 long countHeap;
+long countOp1, countOp2, temp;
 
 class FibonacciHeapNode{
     public:
@@ -82,9 +83,10 @@ class FibonacciHeap{
                 countHeap++;
                 FibonacciHeapNode *x = z->child;
                 countHeap++;
-		FibonacciHeapNode *tempRight;
+        		FibonacciHeapNode *tempRight;
 
                 // get children of z to root lost
+        
                 if ( numKids > 0) {
                     countHeap++;
                     tempRight = z->right;
@@ -136,7 +138,11 @@ class FibonacciHeap{
                 else {
                     minNode = z->right;
                     countHeap++;
+    
+                    temp = countHeap;
                     consolidate();
+                    countOp1 += countHeap - temp;
+
                 }
 
                 // decrement size of heap
@@ -230,12 +236,9 @@ class FibonacciHeap{
             vector<FibonacciHeapNode*> array(arraySize);
             countHeap++;
             // Initialize degree array
-            for (int i = 0; i < arraySize; i++) {
-                countHeap++;
-                array.push_back(NULL);
-                countHeap++;
-            }
+
             // Find the number of root nodes.
+
             int numRoots = 0;
             countHeap++;
             FibonacciHeapNode *x = minNode;
@@ -254,6 +257,7 @@ class FibonacciHeap{
                     countHeap++;
                 }
             }
+            
             // For each node in root list do...
             while (numRoots > 0) {
                 countHeap++;
@@ -273,12 +277,7 @@ class FibonacciHeap{
                     // There is, make one of the nodes a child of the other.
                     // Do this based on the key value.
                     if (x->key > y->key) {
-                        countHeap++;
-                        FibonacciHeapNode *temp = y;
-                        countHeap++;
-                        y = x;
-                        countHeap++;
-                        x = temp;
+                        swap(x, y);
                         countHeap++;
                     }
                     // FibonacciHeapNode y disappears from root list.
