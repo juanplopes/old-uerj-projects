@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 
 #ifdef WIN32
     #include <windows.h>
@@ -53,12 +54,12 @@ int main() {
     int n, m, a, b, c;
     n = m = a = b = c = 0;
     double inicio , fim;
-    char arquivo[500];
+    string arquivo;
 
     cout << "Digite o nome do arquivo com os dados do grafo." << endl;
     cin >> arquivo;
     
-    ifstream fin(arquivo , ios::binary);
+    ifstream fin(arquivo.c_str() , ios::binary);
     
     fin >> n >> m;
     Graph* graph = new Graph(n);
