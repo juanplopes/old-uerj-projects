@@ -5,6 +5,26 @@
   </cenario>
 
   <cenario>
+    <nome>Exibir página de resultados</nome>
+    <conector>
+      <tipo>pre_condicao</tipo>
+      <cenario_relacionado>Exibir página de busca</cenario_relacionado>
+    </conector>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Selecionar currículos</cenario_relacionado>
+    </conector>
+  </cenario>
+
+  <cenario>
+    <nome>Exibir página inicial do sistema</nome>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Exibir página de busca</cenario_relacionado>
+    </conector>
+  </cenario>
+
+  <cenario>
     <nome>Selecionar currículos</nome>
     <conector>
       <tipo>sub_cenario</tipo>
@@ -127,30 +147,12 @@
       <cenario_relacionado>Obter lista de obras do pesquisador</cenario_relacionado>
     </conector>
   </cenario>
+
   <cenario>
     <nome>Obter endereço</nome>
   </cenario>
+  
   <cenario>
     <nome>Obter lista de obras do pesquisador</nome>
-  </cenario>
-  
-  <cenario>
-    <nome>Exibir página de resultados</nome>
-    <conector>
-      <tipo>pre_condicao</tipo>
-      <cenario_relacionado>Exibir página de busca</cenario_relacionado>
-    </conector>
-    <conector>
-      <tipo>sub_cenario</tipo>
-      <cenario_relacionado>Selecionar currículos</cenario_relacionado>
-    </conector>
-  </cenario>
-  
-  <cenario>
-    <nome>Exibir página inicial do sistema</nome>
-    <conector>
-      <tipo>sub_cenario</tipo>
-      <cenario_relacionado>Exibir página de busca</cenario_relacionado>
-    </conector>
   </cenario>
 </cenarios>

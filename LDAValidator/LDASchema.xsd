@@ -27,8 +27,7 @@
                           </xs:restriction>
                         </xs:simpleType>
                       </xs:element>
-                      <xs:element name="cenario_relacionado" type="xs:string">
-                      </xs:element>
+                      <xs:element name="cenario_relacionado" type="xs:string"/>
                     </xs:sequence>
                   </xs:complexType>
                 </xs:element>
@@ -39,5 +38,4 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-
 </xs:schema>
