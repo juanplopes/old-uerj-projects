@@ -4,7 +4,11 @@
     <nome>Teste</nome>
     <conector>
       <tipo>restricao</tipo>
-      <cenario_relacionado>Teste</cenario_relacionado>
+      <cenario_relacionado>Teste2</cenario_relacionado>
     </conector>
+  </cenario>
+
+  <cenario>
+    <nome>Teste2</nome>
   </cenario>
 </cenarios>

@@ -47,6 +47,13 @@ namespace LDAValidator
 
                         ColorPrint("Validação fase 2: OK", ConsoleColor.Green);
 
+                        Console.WriteLine("Validação fase 3...");
+
+                        var cycle = HasCycles(cenarios);
+                        if (cycle != null) throw new InvalidOperationException("Encontrado ciclo: " + string.Join(" > ", MountCycle(cycle, cenarios).ToArray()));
+
+                        ColorPrint("Validação fase 3: OK", ConsoleColor.Green);
+
                         Console.WriteLine();
                         Console.WriteLine("Cenários: " + cenarios.Cenarios.Count);
                         Console.WriteLine("Conectores: " + cenarios.Cenarios.SelectMany(x=>x.Conectores).Count());
@@ -61,7 +68,60 @@ namespace LDAValidator
                     e = e.InnerException;
                 }
             }
+            Console.WriteLine("Pressione qualquer tecla para sair.");
             Console.ReadKey();
+        }
+
+        static XmlCenario HasCycles(XmlCenarios cenarios)
+        {
+            var alreadySeen = new HashSet<XmlCenario>();
+            var dic = cenarios.Cenarios.ToDictionary(x => x.Nome);
+            foreach (var cenario in cenarios.Cenarios)
+            {
+                if (!alreadySeen.Contains(cenario)) {
+                    if (HasCycles(cenario, dic)) return cenario;
+                }
+            }
+            return null;
+        }
+
+        static bool HasCycles(XmlCenario cenario, IDictionary<string, XmlCenario> dic)
+        {
+            var alreadySeen = new HashSet<XmlCenario>();
+            var queue = new Queue<XmlCenario>();
+            queue.Enqueue(cenario);
+
+            while (queue.Count > 0)
+            {
+                var item = queue.Dequeue();
+                if (alreadySeen.Contains(item)) return true;
+                alreadySeen.Add(item);
+                foreach (var child in item.Conectores.Select(x => dic[x.CenarioRelacionado]))
+                {
+                    queue.Enqueue(child);
+                }
+            }
+            return false;
+        }
+
+        static IList<string> MountCycle(XmlCenario cenario, XmlCenarios cenarios)
+        {
+            var dic = cenarios.Cenarios.ToDictionary(x => x.Nome);
+            var queue = new Queue<XmlCenario>();
+            var list = new List<string>();
+            queue.Enqueue(cenario);
+            while (queue.Count > 0)
+            {
+                var item = queue.Dequeue();
+                list.Add(item.Nome);
+                if (item == cenario && list.Count > 1) return list;
+                
+                foreach (var child in item.Conectores.Select(x => dic[x.CenarioRelacionado]))
+                {
+                    queue.Enqueue(child);
+                }
+            }
+            return list;
         }
 
         static void ColorPrint(string text, ConsoleColor color)
