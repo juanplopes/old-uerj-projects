@@ -6,10 +6,6 @@
       <tipo>restricao</tipo>
       <cenario_relacionado>Teste2</cenario_relacionado>
     </conector>
-    <conector>
-      <tipo>restricao</tipo>
-      <cenario_relacionado>Teste3</cenario_relacionado>
-    </conector>
   </cenario>
 
   <cenario>
@@ -22,5 +18,9 @@
 
   <cenario>
     <nome>Teste3</nome>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Teste</cenario_relacionado>
+    </conector>
   </cenario>
 </cenarios>

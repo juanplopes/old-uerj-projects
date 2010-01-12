@@ -4,11 +4,7 @@
     <nome>Teste</nome>
     <conector>
       <tipo>restricao</tipo>
-      <cenario_relacionado>Teste2</cenario_relacionado>
-    </conector>
-    <conector>
-      <tipo>restricao</tipo>
-      <cenario_relacionado>Teste3</cenario_relacionado>
+      <cenario_relacionado>Teste2VAIFALHAR</cenario_relacionado>
     </conector>
   </cenario>
 
@@ -16,11 +12,15 @@
     <nome>Teste2</nome>
     <conector>
       <tipo>restricao</tipo>
-      <cenario_relacionado>Teste3</cenario_relacionado>
+      <cenario_relacionado>Teste3VAIFALHAR</cenario_relacionado>
     </conector>
   </cenario>
 
   <cenario>
     <nome>Teste3</nome>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>TesteVAIFALHAR</cenario_relacionado>
+    </conector>
   </cenario>
 </cenarios>
