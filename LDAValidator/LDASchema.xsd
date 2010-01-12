@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="LDASchema"
+    targetNamespace="http://uerj.br/LDASchema"
+    elementFormDefault="qualified"
+    xmlns="http://uerj.br/LDASchema"
+    xmlns:mstns="http://uerj.br/LDASchema"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:element name="cenarios">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="cenario" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="nome" type="xs:string"/>
+              <xs:sequence>
+                <xs:element name="conector" maxOccurs ="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="tipo">
+                        <xs:simpleType>
+                          <xs:restriction base="xs:string">
+                            <xs:enumeration value="restricao"/>
+                            <xs:enumeration value="pre_condicao"/>
+                            <xs:enumeration value="sub_cenario"/>
+                          </xs:restriction>
+                        </xs:simpleType>
+                      </xs:element>
+                      <xs:element name="cenario_relacionado" type="xs:string">
+                      </xs:element>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>              
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

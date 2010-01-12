@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<cenarios xmlns="http://uerj.br/LDASchema">
+  <cenario>
+    <nome>Teste</nome>
+    <conector>
+      <tipo>restricao</tipo>
+      <cenario_relacionado>Teste</cenario_relacionado>
+    </conector>
+  </cenario>
+</cenarios>
