@@ -35,7 +35,10 @@ namespace LDAValidator
             PreCondicao,
 
             [XmlEnum("sub_cenario")]
-            SubCenario
+            SubCenario,
+
+            [XmlEnum("excecao")]
+            Excecao
         }
 
         [XmlElement("tipo")]

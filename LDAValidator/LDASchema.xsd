@@ -23,6 +23,7 @@
                             <xs:enumeration value="restricao"/>
                             <xs:enumeration value="pre_condicao"/>
                             <xs:enumeration value="sub_cenario"/>
+                            <xs:enumeration value="excecao"/>
                           </xs:restriction>
                         </xs:simpleType>
                       </xs:element>

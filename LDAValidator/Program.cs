@@ -24,7 +24,7 @@ namespace LDAValidator
                 {
                     using (var schemaFile = new MemoryStream(Encoding.UTF8.GetBytes(Resources.LDASchema)))
                     {
-                        Console.WriteLine("Validação fase 1...");
+                        Console.WriteLine("Validando XML contra o Schema...");
 
                         var settings = new XmlReaderSettings();
                         settings.Schemas.Add(XmlSchema.Read(schemaFile, (obj, e) => Console.WriteLine(e.Message)));
@@ -38,25 +38,27 @@ namespace LDAValidator
                         XmlSerializer xml = new XmlSerializer(typeof(XmlCenarios));
                         var cenarios = (XmlCenarios)xml.Deserialize(XmlReader.Create(file, settings));
 
+                        Console.WriteLine();
+                        Console.WriteLine("Cenários: " + cenarios.Cenarios.Count);
+                        Console.WriteLine("Conectores: " + cenarios.Cenarios.SelectMany(x => x.Conectores).Count());
+                        Console.WriteLine();
+
                         ColorPrint("Validação fase 1: OK", ConsoleColor.Green);
 
-                        Console.WriteLine("Validação fase 2...");
+                        Console.WriteLine("Validação referências de nome de cenário...");
                         var inexistent = cenarios.Cenarios.SelectMany(x => x.Conectores.Select(y => y.CenarioRelacionado).Where(z => cenarios.Cenarios.Count(w => w.Nome == z) == 0));
 
                         if (inexistent.Count() > 0) throw new InvalidOperationException("Conectores inválidos. Rever referências aos cenários: " + string.Join(", ", inexistent.ToArray()));
 
                         ColorPrint("Validação fase 2: OK", ConsoleColor.Green);
 
-                        Console.WriteLine("Validação fase 3...");
+                        Console.WriteLine("Validando não-existência de ciclos...");
 
                         var cycle = HasCycles(cenarios);
                         if (cycle != null) throw new InvalidOperationException("Encontrado ciclo: " + string.Join(" > ", cycle.Select(x=>x.Nome).ToArray()));
 
                         ColorPrint("Validação fase 3: OK", ConsoleColor.Green);
 
-                        Console.WriteLine();
-                        Console.WriteLine("Cenários: " + cenarios.Cenarios.Count);
-                        Console.WriteLine("Conectores: " + cenarios.Cenarios.SelectMany(x=>x.Conectores).Count());
                     }
                 }
             }

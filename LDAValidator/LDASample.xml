@@ -1,26 +1,156 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <cenarios xmlns="http://uerj.br/LDASchema">
   <cenario>
-    <nome>Teste</nome>
+    <nome>Exibir página de busca</nome>
+  </cenario>
+
+  <cenario>
+    <nome>Selecionar currículos</nome>
     <conector>
-      <tipo>restricao</tipo>
-      <cenario_relacionado>Teste2</cenario_relacionado>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Fazer requisição</cenario_relacionado>
     </conector>
     <conector>
-      <tipo>restricao</tipo>
-      <cenario_relacionado>Teste3</cenario_relacionado>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Limpar string</cenario_relacionado>
+    </conector>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Exibir tópicos interessantes encontrados no currículo</cenario_relacionado>
     </conector>
   </cenario>
 
   <cenario>
-    <nome>Teste2</nome>
+    <nome>Exibir contagem de citações</nome>
     <conector>
-      <tipo>restricao</tipo>
-      <cenario_relacionado>Teste3</cenario_relacionado>
+      <tipo>pre_condicao</tipo>
+      <cenario_relacionado>Obter código HTML do currículo</cenario_relacionado>
+    </conector>
+  </cenario>
+  
+  <cenario>
+    <nome>Limpar string</nome>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Remover excesso de espaços</cenario_relacionado>
+    </conector>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Converter caracteres acentuados</cenario_relacionado>
     </conector>
   </cenario>
 
   <cenario>
-    <nome>Teste3</nome>
+    <nome>Remover excesso de espaços</nome>
+  </cenario>
+  
+  <cenario>
+    <nome>Converter caracteres acentuados</nome>
+  </cenario>
+  
+  <cenario>
+    <nome>Montar URL para pesquisa no Google</nome>
+    <conector>
+      <tipo>pre_condicao</tipo>
+      <cenario_relacionado>Selecionar currículos</cenario_relacionado>
+    </conector>
+  </cenario>
+
+  <cenario>
+    <nome>Fazer requisição</nome>
+    <conector>
+      <tipo>pre_condicao</tipo>
+      <cenario_relacionado>Montar URL para pesquisa no Google</cenario_relacionado>
+    </conector>
+  </cenario>
+
+  <cenario>
+    <nome>Exibir tópicos interessantes encontrados no currículo</nome>
+    <conector>
+      <tipo>pre_condicao</tipo>
+      <cenario_relacionado>Fazer requisição</cenario_relacionado>
+    </conector>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Exibir contagem de citações</cenario_relacionado>
+    </conector>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Obter código HTML do currículo</cenario_relacionado>
+    </conector>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Obter tópicos interessantes do currículo</cenario_relacionado>
+    </conector>
+  </cenario>
+
+  <cenario>
+    <nome>Obter código HTML do currículo</nome>
+  </cenario>
+
+  <cenario>
+    <nome>Obter nome do pesquisador</nome>
+    <conector>
+      <tipo>pre_condicao</tipo>
+      <cenario_relacionado>Obter código HTML do currículo</cenario_relacionado>
+    </conector>
+    <conector>
+      <tipo>excecao</tipo>
+      <cenario_relacionado>Informar falha na busca de tópicos</cenario_relacionado>
+    </conector>
+  </cenario>
+
+  <cenario>
+    <nome>Informar falha na busca de tópicos</nome>
+  </cenario>
+  
+  <cenario>
+    <nome>Obter tópicos interessantes do currículo</nome>
+    <conector>
+      <tipo>pre_condicao</tipo>
+      <cenario_relacionado>Obter código HTML do currículo</cenario_relacionado>
+    </conector>
+  </cenario>
+  
+  <cenario>
+    <nome>Exibir total de citações</nome>
+    <conector>
+      <tipo>pre_condicao</tipo>
+      <cenario_relacionado>Obter nome do pesquisador</cenario_relacionado>
+    </conector>
+    <conector>
+      <tipo>pre_condicao</tipo>
+      <cenario_relacionado>Obter endereço</cenario_relacionado>
+    </conector>
+    <conector>
+      <tipo>pre_condicao</tipo>
+      <cenario_relacionado>Obter lista de obras do pesquisador</cenario_relacionado>
+    </conector>
+  </cenario>
+  <cenario>
+    <nome>Obter endereço</nome>
+  </cenario>
+  <cenario>
+    <nome>Obter lista de obras do pesquisador</nome>
+  </cenario>
+  
+  <cenario>
+    <nome>Exibir página de resultados</nome>
+    <conector>
+      <tipo>pre_condicao</tipo>
+      <cenario_relacionado>Exibir página de busca</cenario_relacionado>
+    </conector>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Selecionar currículos</cenario_relacionado>
+    </conector>
+  </cenario>
+  
+  <cenario>
+    <nome>Exibir página inicial do sistema</nome>
+    <conector>
+      <tipo>sub_cenario</tipo>
+      <cenario_relacionado>Exibir página de busca</cenario_relacionado>
+    </conector>
   </cenario>
 </cenarios>
